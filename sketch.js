@@ -50,7 +50,7 @@ function drawTable() {
 
       // 텍스트 표시
       fill(0);
-      textSize(width * 0.04);
+      textSize(width * 0.03);
 
       if (r === 0) {
         // 헤더 줄의 텍스트
