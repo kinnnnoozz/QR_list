@@ -2,7 +2,7 @@ let rows = 10;  // 세로 10칸
 let cols = 5;   // 가로 5칸
 
 // 첫 번째 줄(헤더 row)에 표시할 텍스트
-let headerLabels = ["날짜?", "?", "?", "?", "?"];
+let headerLabels = ["?", "?", "?", "?", "?"];
 
 function setup() {
   let canvasWidth = windowWidth;
