@@ -277,7 +277,7 @@ function mousePressed() {
 function touchMoved() {
   scrollY += movedY;
   scrollY = constrain(scrollY, height - contentHeight - 20, 0);
-  return false;
+  return true;
 }
 
 function mouseWheel(e) {
