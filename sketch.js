@@ -280,9 +280,6 @@ function touchMoved() {
   return false;
 }
 
-function touchStarted() {
-  return false;
-}
 
 function mouseWheel(e) {
   scrollY -= e.delta;
