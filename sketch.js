@@ -80,6 +80,9 @@ function preload() {
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textFont("sans-serif");
+
+   let c = document.querySelector('canvas');
+  c.style.touchAction = 'none';
 }
 
 function draw() {
@@ -90,6 +93,15 @@ function draw() {
   scheduleStartY = imgH - height * 0.25;
 
   drawHeaderImage(imgH);
+
+  push();
+  resetMatrix(); // 스크롤 이동 영향을 받지 않게
+  fill(180);
+  noStroke();
+  textAlign(LEFT, TOP);
+  textSize(width * 0.020);
+  text("made by @kinnnnoozz", 16, 16);
+  pop();
   drawSchedule();
 }
 
