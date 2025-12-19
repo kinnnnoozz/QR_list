@@ -4,8 +4,7 @@ let contentHeight = 0;
 
 // 일정 UI 시작 기준
 let scheduleStartY = 0;
-let scheduleContentHeight = 0;
-let maxPreviewHeight = 80;
+let maxPreviewHeight = 80; // 미리보기 최대 높이
 
 // 행사 일정 데이터
 let schedule = [
@@ -47,7 +46,7 @@ let schedule = [
   {
     time: "15:20~16:20",
     title: "서용순 선생님 강연",
-    detail: "<비분별의 존재론 : 예술이 진리(진실)을 취하는 법> 강연입니다. 예술은 진리를 선취하는 탐험의 여정입니다.",
+    detail: "<비분별의 존재론 : 예술이 진리(진실)을 취하는 법>, 한국예술종합학교에서 '현대 철학의 흐름', '세계사' 강의를 담당해주시는 서용순 교수님의 강연이 진행됩니다. \n\n\비분별의 존재론 : 예술이 진리(진실)을 선취하는 법.'나는 타자다'라는 시인 랭보의 단언은 단순히 차이를 선언하는 것을 넘어서 존재에 대한 새로운 사유의 지평으로 나아간다. 나와 타자의 비분리, 비분별의 사유가 그 안에 있다. '나는 나와 다름'이라는 테제에서 출발하여, 모든 개별적 동일자와 절대적으로 분리된 타자 모두를 기각하는 새로운 존재론의 지평을 사유함으로써 우리는 존재의 진리에 가닿는다. 예술은 그 과정을 실행함으로써 진리를 선취하는 탐험의 여정이다.\n\n",
     open: false,
     fullOpen: false
   },
@@ -61,14 +60,14 @@ let schedule = [
   {
     time: "18:00~19:00",
     title: "임영주 선생님 워크숍",
-    detail: "강점 중심의 자기서사에서 벗어나, 작업을 하며 반복되는 약점의 패턴을 바라보고 의미를 고민하는 시간입니다.",
+    detail: "한국예술종합학교에서 '스튜디오 2', '스튜디오 4' 강의를 담당해주시는 임영주 교수님의 워크샵이 진행됩니다. '졸업에 앞서 버린것을 돌아보는 시간을 갖는것입니다. 강점 중심의 자기서사에서 벗어나, 작업을 하며 반복되는 약점의 패턴을 바라보고 의미를 고민하는 시간입니다.' ",
     open: false,
     fullOpen: false
   },
   {
     time: "16:00~18:00",
-    title: "신현지 작가님 워크숍",
-    detail: "예약제로 진행됩니다. 퍼포먼스실 308호에서 차를 마시며 시를 쓰는 워크숍입니다.",
+    title: "신현지 작가님 워크샵",
+    detail: "해당 워크샵은 예약제로, 연수동 퍼포먼스실 308호에서 진행됩니다. \n\n\ 땀 흘리는 나무\n\n <땀 흘리는 나무>를 바라보며 차를 마시고 시를 쓰는 순간을 제안한다. <땀 흘리는 나무>는 식물과 동물, 자연과 인간이 결합된 상태를 드러내는 조형물이다. 표면에 작고 조밀한 구멍들이 나 있어 물을 담으면 땀을 흘리는 것처럼 물방울이 맺힌다. <땀 흘리는 나무>의 표면에서 비질비질 흘러나오는 물방울들은 멈추어져 있는 듯 보이는 존재들이 우리 앞에서 숨을 내쉬고 땀을 흘리며 자신의 신체 작용을 보여주고 있는 것 같은 환영을 불러일으킨다.\n\차를 함께 마시며 같은 맛과 향을 공유하고, 차를 통해 닿게 된 심상들로 시를 쓴다. 차를 마시면서 쓰여진 시들은 내가 아닌 누군가로 전환된 상태의 다양한 화자들을 불러들인다. 전시장에 모인 관객들과 지금의 ‘나’를 벗고 또 다른 누군가가 되는 상상을 시도한다.\n\n\나와 나 아닌 것, 나에서 벗어난 것, 섬처럼 떨어져 있는 존재들과 연결되고 접합되는 경험을 가져본다.\n\n",
     open: false,
     fullOpen: false
   }
@@ -92,9 +91,6 @@ function draw() {
 
   drawHeaderImage(imgH);
   drawSchedule();
-
-  // ✅ 전체 콘텐츠 높이 계산
-  contentHeight = scheduleStartY + scheduleContentHeight;
 }
 
 // ----------------------------
@@ -111,7 +107,10 @@ function drawCoverImage(img, x, y, w, h) {
     drawH = w / imgRatio;
   }
 
-  image(img, x + (w - drawW) / 2, y + (h - drawH) / 2, drawW, drawH);
+  let dx = x + (w - drawW) / 2;
+  let dy = y + (h - drawH) / 2;
+
+  image(img, dx, dy, drawW, drawH);
 }
 
 // ----------------------------
@@ -129,14 +128,38 @@ function drawHeaderImage(imgH) {
 }
 
 // ----------------------------
+function getTextBlockHeight(txt, txtSize, maxWidth) {
+  textSize(txtSize);
+  textLeading(txtSize * 1.4);
+
+  let words = txt.split(" ");
+  let line = "";
+  let lines = 1;
+
+  for (let i = 0; i < words.length; i++) {
+    let testLine = line + words[i] + " ";
+    if (textWidth(testLine) > maxWidth) {
+      line = words[i] + " ";
+      lines++;
+    } else {
+      line = testLine;
+    }
+  }
+
+  let lineH = textAscent() + textDescent();
+  return lines * lineH * 1.4 + 24; // padding 포함
+}
+
+// ----------------------------
 function drawSchedule() {
   let y = scheduleStartY;
-  let startY = y;
   let padding = width * 0.05;
 
-  for (let item of schedule) {
+  for (let i = 0; i < schedule.length; i++) {
+    let item = schedule[i];
     let titleH = 64;
 
+    // 제목 박스
     fill(20);
     stroke(70);
     rect(padding, y, width - padding * 2, titleH, 12);
@@ -152,24 +175,46 @@ function drawSchedule() {
     if (item.open) {
       let txtSize = width * 0.032;
       let maxTextW = width - padding * 2 - 32;
-      let fullHeight = maxPreviewHeight * 2;
-      let showHeight = item.fullOpen ? fullHeight : maxPreviewHeight;
+      let fullHeight = getTextBlockHeight(item.detail, txtSize, maxTextW);
 
+      // 긴 글만 잘리게 처리
+      let showHeight = fullHeight > maxPreviewHeight ? (item.fullOpen ? fullHeight : maxPreviewHeight) : fullHeight;
+
+      // 박스
       fill(10);
       stroke(50);
       rect(padding, y, width - padding * 2, showHeight, 12);
 
+      // 텍스트 clip 처리
+      push();
+      translate(padding, y);
       fill(200);
       noStroke();
       textAlign(LEFT, TOP);
       textSize(txtSize);
       textLeading(txtSize * 1.4);
-      text(item.detail, padding + 16, y + 12, maxTextW);
 
-      if (!item.fullOpen) {
+      let clipH = showHeight - 24;
+      drawingContext.save();
+      drawingContext.beginPath();
+      drawingContext.rect(0, 0, maxTextW, clipH);
+      drawingContext.clip();
+
+      text(item.detail, 16, 12, maxTextW);
+      drawingContext.restore();
+      pop();
+
+      // 더보기/접기 버튼 표시
+      if (!item.fullOpen && fullHeight > maxPreviewHeight) {
         fill(255);
         textAlign(RIGHT, BOTTOM);
+        textSize(txtSize);
         text("더보기 ▼", width - padding - 16, y + showHeight - 6);
+      } else if (item.fullOpen) {
+        fill(255);
+        textAlign(RIGHT, BOTTOM);
+        textSize(txtSize);
+        text("접기 ▲", width - padding - 16, y + showHeight - 6);
       }
 
       y += showHeight;
@@ -178,25 +223,73 @@ function drawSchedule() {
     y += 12;
   }
 
-  // ✅ 일정 전체 높이만 저장
-  scheduleContentHeight = y - startY;
+  contentHeight = y;
+}
+
+// ----------------------------
+function mousePressed() {
+  let y = scheduleStartY;
+  let padding = width * 0.05;
+
+  for (let i = 0; i < schedule.length; i++) {
+    let item = schedule[i];
+    let titleH = 64;
+
+    // 제목 클릭 → 다른 일정 닫기
+    if (mouseX > padding && mouseX < width - padding &&
+        mouseY - scrollY > y && mouseY - scrollY < y + titleH) {
+      for (let j = 0; j < schedule.length; j++) {
+        if (j !== i) {
+          schedule[j].open = false;
+          schedule[j].fullOpen = false;
+        }
+      }
+      item.open = !item.open;
+      item.fullOpen = false; // 처음 열 때는 미리보기만
+      break;
+    }
+
+    y += titleH;
+
+    // 상세 내용 클릭 → 더보기/접기 토글
+    if (item.open) {
+      let txtSize = width * 0.032;
+      let maxTextW = width - padding * 2 - 32;
+      let fullHeight = getTextBlockHeight(item.detail, txtSize, maxTextW);
+      let showHeight = fullHeight > maxPreviewHeight ? (item.fullOpen ? fullHeight : maxPreviewHeight) : fullHeight;
+
+      if (mouseX > padding && mouseX < width - padding &&
+          mouseY - scrollY > y && mouseY - scrollY < y + showHeight) {
+        if (fullHeight > maxPreviewHeight) {
+          item.fullOpen = !item.fullOpen; // 토글
+        }
+        break;
+      }
+
+      y += showHeight;
+    }
+
+    y += 12;
+  }
 }
 
 // ----------------------------
 function touchMoved() {
-  scrollY += movedY;
-  let minScroll = Math.min(height - contentHeight, 0);
-  scrollY = constrain(scrollY, minScroll, 0);
+  scrollY -= movedY;
+  scrollY = constrain(scrollY, height - contentHeight - 20, 0);
+  return false;
+}
+
+function touchStarted() {
   return false;
 }
 
 function mouseWheel(e) {
   scrollY -= e.delta;
-  let minScroll = Math.min(height - contentHeight, 0);
-  scrollY = constrain(scrollY, minScroll, 0);
+  scrollY = constrain(scrollY, height - contentHeight - 20, 0);
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }
- 
+
